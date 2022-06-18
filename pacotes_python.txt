@@ -1,5 +1,0 @@
-Abrir o CMD do computador e digitar:
-
-pip install pandas
-pip install openpyxl
-pip install numpy
