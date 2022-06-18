@@ -28,13 +28,13 @@ def file_to_df(file):
     return df
 
 def calcs(df):
-    #Vazão(Kg/s)
+    #Flow rate(Kg/s)
     flw_rt_mean = df['Vaz[kg/s]'].mean()
 
     #Dp(mbar)
     dp_mean = df['DP'].mean()
 
-    #Desvio Padrão
+    #Standard deviation
     dp_std = df['DP'].std()
 
     #V(m/s)
@@ -48,34 +48,33 @@ def calcs(df):
 
 
 def main():
-    plt = 1
     res = 1
     result_plt = np.empty([0,5])
 
-    while os.path.exists(f'placa_{plt}/res_{res}'):
+    for plt in range(200):
 
-        while os.path.exists(f'placa_{plt}/res_{res}'):
+        if os.path.exists(f'placa_{plt}/res_{res}'):
 
-            df = file_to_df(f'placa_{plt}/res_{res}')
-            result_plt = np.vstack((result_plt, calcs(df)))
-            res += 1
+            while os.path.exists(f'placa_{plt}/res_{res}'):
 
-        result_df = pd.DataFrame(
-            result_plt,
-            columns = [
-                'V(m/s)', 'Vaz.(kg/s)', 'Re',
-                'Dp(mbar)', 'Desv.Pad.'
-            ]
-        )
+                df = file_to_df(f'placa_{plt}/res_{res}')
+                result_plt = np.vstack((result_plt, calcs(df)))
+                res += 1
 
-        if os.path.exists(f'placa_{plt}/resultados_{plt}.xlsx'): 
-            os.remove(f'placa_{plt}/resultados_{plt}.xlsx')
-        result_df.to_excel(f'placa_{plt}/resultados_{plt}.xlsx')
+            result_df = pd.DataFrame(
+                result_plt,
+                columns = [
+                    'V(m/s)', 'Vaz.(kg/s)', 'Re',
+                    'Dp(mbar)', 'Desv.Pad.'
+                ]
+            )
 
-        plt += 1 
+            if os.path.exists(f'placa_{plt}/resultados_{plt}.xlsx'): 
+                os.remove(f'placa_{plt}/resultados_{plt}.xlsx')
+            result_df.to_excel(f'resultados_{plt}.xlsx')
 
-        result_plt = np.empty([0,5])
-        res = 1
+            result_plt = np.empty([0,5])
+            res = 1
 
 if __name__ == '__main__':
     main()
