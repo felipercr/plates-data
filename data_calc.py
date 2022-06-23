@@ -41,7 +41,7 @@ def calcs(df):
     v = flw_rt_mean / (area() * df['ro ST [kg/m3]'].mean())
 
     #Re
-    re = (df['ro ST [kg/m3]'].mean() * v * dh()) / (df['Visc *10000'].mean() / 1000)
+    re = (df['ro ST [kg/m3]'].mean() * v * dh()) / (df['Visc *10000'].mean() / 10000)
 
     results = np.array([v, flw_rt_mean, re, dp_mean, dp_std])
     return results
@@ -50,6 +50,8 @@ def calcs(df):
 def main():
     res = 1
     result_plt = np.empty([0,5])
+
+    all_results = []
 
     for plt in range(200):
 
@@ -66,15 +68,20 @@ def main():
                 columns = [
                     'V(m/s)', 'Vaz.(kg/s)', 'Re',
                     'Dp(mbar)', 'Desv.Pad.'
-                ]
+                ],
+                index = [f'Placa_{plt} 1', '2', '3', '4', '5']
             )
 
-            if os.path.exists(f'placa_{plt}/resultados_{plt}.xlsx'): 
-                os.remove(f'placa_{plt}/resultados_{plt}.xlsx')
-            result_df.to_excel(f'resultados_{plt}.xlsx')
+            all_results.append(result_df)
 
             result_plt = np.empty([0,5])
             res = 1
+
+    all_results = pd.concat(all_results)
+
+    if os.path.exists(f'resultados.xlsx'): 
+        os.remove(f'resultados.xlsx')
+    all_results.to_excel(f'resultados.xlsx')
 
 if __name__ == '__main__':
     main()
