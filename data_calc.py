@@ -50,7 +50,7 @@ def calcs(df):
 def main():
     res = 1
     result_plt = np.empty([0,5])
-
+    df_index = []
     all_results = []
 
     for plt in range(200):
@@ -61,6 +61,8 @@ def main():
 
                 df = file_to_df(f'placa_{plt}/res_{res}')
                 result_plt = np.vstack((result_plt, calcs(df)))
+                if res == 1: df_index.append(f'Placa_{plt} {res}')
+                else:        df_index.append(f'{res}')
                 res += 1
 
             result_df = pd.DataFrame(
@@ -69,12 +71,13 @@ def main():
                     'V(m/s)', 'Vaz.(kg/s)', 'Re',
                     'Dp(mbar)', 'Desv.Pad.'
                 ],
-                index = [f'Placa_{plt} 1', '2', '3', '4', '5']
+                index = df_index
             )
 
             all_results.append(result_df)
 
             result_plt = np.empty([0,5])
+            df_index = []
             res = 1
 
     all_results = pd.concat(all_results)
